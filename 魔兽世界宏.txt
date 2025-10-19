@@ -1,0 +1,31 @@
+#showtooltip
+/castsequence [nocombat] reset=combat 暗影打击, 肾击, 暗影之舞;
+/castsequence [combat] reset=combat 死亡符记, 暗影打击, 影分身, 暗影打击, 刺骨, 偷袭, 刺骨, 偷袭, 刺骨;
+
+
+#showtooltip
+/castsequence reset=combat 暗影打击, 狂热鞭笞, 割裂,暗影之刃,死亡符记, 暗影之舞,偷袭, 影分身, 暗影打击, 刺骨;
+
+
+
+蓝门，也叫闪烁光门，丰裕地下堡必出，非丰裕的话概率出。
+你进丰裕地下堡时，屏幕中间会显示有一道闪烁光门。
+通常闪烁光门点击后会出三种效果：
+1.什么也没有，但最终通关后会多出一个闪烁宝箱。
+2.出来一个节点女王的幻影，击杀后，最终通关同上，会多出一个闪烁宝箱。
+3.出来一个虚灵门，进去打完后，默认该次地下堡全清，该出的都会出，也有闪烁宝箱。
+
+还有，如果闪烁光门和虚灵门同时出现，建议先开了闪烁光门再去进虚灵门，因为没点闪烁光门不会出闪烁宝箱。
+
+
+
+伤害显示
+/console floatingCombatTextCombatDamage 1
+数字大小
+/console WorldTextScale 1.5
+宠物伤害
+/console floatingCombatTextPetSpellDamage 1
+取消施法条
+/script CastingBarFrame:UnregisterAllEvents()
+
+https://bbs.nga.cn/read.php?&tid=43611156&pid=815127617&to=1
