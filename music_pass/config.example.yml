@@ -1,0 +1,30 @@
+# Appium 自动点击脚本配置文件
+# 将此文件复制为 config.yml 并修改为实际的配置值
+
+# 设备连接配置
+device_ip: "192.168.1.100"      # Android设备的IP地址
+device_port: "5555"             # Android设备的adb端口
+
+# Appium服务器配置
+appium_ip: "127.0.0.1"          # Appium服务器的IP地址
+appium_port: "4723"             # Appium服务器的端口
+
+# 应用配置
+app_package: "com.example.app"                    # 目标应用的包名
+app_activity: "com.example.app.MainActivity"     # 目标应用的Activity名
+
+# 按钮定位配置（可以配置多种定位方式，优先级：ID > XPath > 文本）
+button_text: "领取成功"                           # 按钮文本
+button_id: "com.example.app:id/btn_success"      # 按钮ID
+button_xpath: "//android.widget.Button[@text='领取成功']"  # 按钮XPath
+
+# 运行参数
+interval: 2        # 检测间隔（秒）
+timeout: 300       # 超时时间（秒），设为0表示不超时
+
+# 截图配置
+screenshot: true              # 是否启用截图功能
+screenshot_dir: "screenshots" # 截图保存目录
+
+# 调试配置
+debug: false       # 是否启用调试模式

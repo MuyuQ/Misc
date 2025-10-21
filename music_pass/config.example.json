@@ -1,0 +1,16 @@
+{
+  "device_ip": "192.168.1.100",
+  "device_port": "5555",
+  "appium_ip": "127.0.0.1",
+  "appium_port": "4723",
+  "app_package": "com.example.app",
+  "app_activity": "com.example.app.MainActivity",
+  "button_text": "领取成功",
+  "button_id": "com.example.app:id/btn_success",
+  "button_xpath": "//android.widget.Button[@text='领取成功']",
+  "interval": 2,
+  "timeout": 300,
+  "screenshot": true,
+  "screenshot_dir": "screenshots",
+  "debug": false
+}
