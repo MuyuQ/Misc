@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_tls_cert_expiry.sh
 # 用途：检查远端 TLS 证书到期时间，临近过期告警
 # 依赖：bash、openssl
@@ -11,14 +12,16 @@
 #   TLS_CHECK_TARGETS="example.com:443" TLS_EXPIRY_WARN_DAYS=21 TLS_EXPIRY_CRIT_DAYS=7
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查远端 TLS 证书到期时间，临近过期告警"
 
 JSON=0; TARGETS=${TLS_CHECK_TARGETS:-example.com:443}; WARN=${TLS_EXPIRY_WARN_DAYS:-21}; CRIT=${TLS_EXPIRY_CRIT_DAYS:-7}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --targets) TARGETS="$2"; shift ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;

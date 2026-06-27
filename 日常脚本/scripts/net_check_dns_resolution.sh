@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_dns_resolution.sh
 # 用途：检查 DNS 解析可用性与延迟，异常时告警
 # 依赖：bash、dig 或 getent hosts
@@ -9,14 +10,16 @@
 #   DNS_TEST_NAMES="example.com,www.google.com"
 # 退出码：0 正常；1 警告（耗时较大/部分失败）；2 严重（全部失败）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 DNS 解析可用性与延迟，异常时告警"
 
 JSON=0; NAMES=${DNS_TEST_NAMES:-example.com}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --names) NAMES="$2"; shift ;;
   esac; shift || true
 done

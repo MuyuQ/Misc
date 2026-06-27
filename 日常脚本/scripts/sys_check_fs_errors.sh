@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_fs_errors.sh
 # 用途：扫描内核与系统日志中的文件系统错误（只读检查）
 # 依赖：bash、dmesg；可选：journalctl
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 无错误；1 发现错误；2 严重错误（匹配到 panic/BUG）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="扫描内核与系统日志中的文件系统错误（只读检查）"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_bandwidth_usage.sh
 # 用途：按网卡计算瞬时带宽（bytes/s），报告最大值并可阈值告警
 # 依赖：bash、/sys/class/net/*/statistics
@@ -10,14 +11,16 @@
 #   BANDWIDTH_WARN_BPS=12500000（约100Mbps） BPS_CRIT=62500000（约500Mbps）
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="按网卡计算瞬时带宽（bytes/s），报告最大值并可阈值告警"
 
 JSON=0; WARN=${BANDWIDTH_WARN_BPS:-12500000}; CRIT=${BPS_CRIT:-62500000}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true

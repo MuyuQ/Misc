@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：ctr_check_docker_container_health.sh
 # 用途：检查 Docker 容器健康状态与重启次数，异常时告警
 # 依赖：bash、docker
@@ -7,9 +8,10 @@
 # 环境变量：无
 # 退出码：0 正常；1 异常；2 严重（大量异常）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 Docker 容器健康状态与重启次数，异常时告警"
 
 command -v docker >/dev/null 2>&1 || exit_missing_dep docker
 
@@ -17,6 +19,7 @@ JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

@@ -78,6 +78,6 @@
 - 邮件告警使用 `alerts/send_mail.py`（配置 `SMTP_*` 与 `MAIL_TO`）。
 
 ## 示例
-- `./scripts/check_cpu_load.sh --json`
-- `PING_TARGETS="1.1.1.1,8.8.8.8" ./scripts/check_network_latency.sh --json`
-- `REQUIRED_SERVICES="sshd,nginx" ./scripts/check_systemd_services.sh`
+- `./scripts/sys_check_cpu_load.sh --json`
+- `PING_TARGETS="1.1.1.1,8.8.8.8" ./scripts/net_check_network_latency.sh --json`
+- `REQUIRED_SERVICES="sshd,nginx" ./scripts/svc_check_systemd_services.sh`

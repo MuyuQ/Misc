@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_network_latency.sh
 # 用途：对多个目标执行 ping，统计丢包率与延迟，超阈值告警
 # 依赖：bash、ping、awk
@@ -11,9 +12,10 @@
 #   PING_TARGETS="1.1.1.1,8.8.8.8" PING_LOSS_WARN_PERCENT=20 PING_LOSS_CRIT_PERCENT=50
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="对多个目标执行 ping，统计丢包率与延迟，超阈值告警"
 
 require_cmd ping || exit_missing_dep ping
 
@@ -21,6 +23,7 @@ JSON=0; TARGETS=${PING_TARGETS:-1.1.1.1}; LWARN=${PING_LOSS_WARN_PERCENT:-20}; L
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --targets) TARGETS="$2"; shift ;;
     --loss-warn) LWARN="$2"; shift ;;
     --loss-crit) LCRIT="$2"; shift ;;

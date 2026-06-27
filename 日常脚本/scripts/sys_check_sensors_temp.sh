@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_sensors_temp.sh
 # 用途：读取硬件温度（sensors），超过阈值告警
 # 依赖：bash、sensors（lm-sensors）
@@ -10,14 +11,16 @@
 #   TEMP_WARN_C=80 TEMP_CRIT_C=90
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="读取硬件温度（sensors），超过阈值告警"
 
 JSON=0; WARN=${TEMP_WARN_C:-80}; CRIT=${TEMP_CRIT_C:-90}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true
@@ -27,7 +30,7 @@ command -v sensors >/dev/null 2>&1 || exit_missing_dep sensors
 
 MAX=0
 while read -r line; do
-  val=$(echo "$line" | grep -Eo '\+[0-9]+\.[0-9]+' | tr -d '+')
+  val=$(echo "$line" | grep -Eo '\+[0-9]+\.[0-9]+' | tr -d '+' || true)
   if [ -n "$val" ]; then
     v=$(printf %.0f "$val")
     [ "$v" -gt "$MAX" ] && MAX="$v"

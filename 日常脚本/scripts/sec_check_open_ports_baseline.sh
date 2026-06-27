@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_open_ports_baseline.sh
 # 用途：开放端口与基线比对（允许集合、必需集合），存在差异时告警
 # 依赖：bash、ss 或 netstat
@@ -10,14 +11,16 @@
 #   ALLOWED_PORTS="22,80,443" REQUIRED_PORTS="22,80,443"
 # 退出码：0 无差异；1 有差异；2 严重（大量差异）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="开放端口与基线比对（允许集合、必需集合），存在差异时告警"
 
 JSON=0; ALLOWED=${ALLOWED_PORTS:-22}; REQUIRED=${REQUIRED_PORTS:-22}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --allowed) ALLOWED="$2"; shift ;;
     --required) REQUIRED="$2"; shift ;;
   esac; shift || true

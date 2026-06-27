@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_route_table_changes.sh
 # 用途：检测路由表与基线差异（可选），发现变更时告警
 # 依赖：bash、ip route
@@ -9,14 +10,16 @@
 #   ROUTE_BASELINE_PATH=./state/route.last
 # 退出码：0 无差异；1 有差异；2 严重（路由条目显著变化）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检测路由表与基线差异（可选），发现变更时告警"
 
 JSON=0; BASELINE=${ROUTE_BASELINE_PATH:-./state/route.last}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --baseline) BASELINE="$2"; shift ;;
   esac; shift || true
 done

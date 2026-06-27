@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_unexpected_open_ports.sh
 # 用途：检测开放端口是否超出允许基线，发现异常端口告警
 # 依赖：bash、ss 或 netstat
@@ -9,14 +10,16 @@
 #   ALLOWED_PORTS="22,80,443"
 # 退出码：0 无异常；1 有异常；2 严重（异常端口过多）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检测开放端口是否超出允许基线，发现异常端口告警"
 
 JSON=0; ALLOWED=${ALLOWED_PORTS:-22}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --allowed) ALLOWED="$2"; shift ;;
   esac; shift || true
 done

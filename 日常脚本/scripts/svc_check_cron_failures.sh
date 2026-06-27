@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：svc_check_cron_failures.sh
 # 用途：检查最近的定时任务失败记录（CRON），发现异常时告警
 # 依赖：bash、journalctl 或 syslog
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 无；1 有；2 严重（大量失败）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查最近的定时任务失败记录（CRON），发现异常时告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_cpu_load.sh
 # 用途：检查系统负载与 CPU 使用率，超阈值时发送邮件告警
 # 依赖：bash、uptime、awk；可选：mpstat（sysstat）
@@ -12,15 +13,17 @@
 # 示例：
 #   ./scripts/check_cpu_load.sh --json
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查系统负载与 CPU 使用率，超阈值时发送邮件告警"
 
 JSON=0
 THRESH=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --threshold) THRESH="$2"; shift ;;
   esac
   shift || true

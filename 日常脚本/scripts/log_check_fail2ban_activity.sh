@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：log_check_fail2ban_activity.sh
 # 用途：检查 fail2ban 运行状态与封禁计数，异常时告警
 # 依赖：bash、fail2ban-client
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 正常；1 有封禁（提示审查）；2 严重（封禁激增/服务异常）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 fail2ban 运行状态与封禁计数，异常时告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

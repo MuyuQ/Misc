@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：stg_check_backup_status.sh
 # 用途：检查最近备份完成标记/日志时间，过期则告警
 # 依赖：bash、stat、date
@@ -10,14 +11,16 @@
 #   BACKUP_MARKERS="/var/log/backup.ok" BACKUP_MAX_AGE_HOURS=24
 # 退出码：0 正常；1 过期；2 严重（长期未备份）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查最近备份完成标记/日志时间，过期则告警"
 
 JSON=0; MARKERS=${BACKUP_MARKERS:-/var/log/backup.ok}; MAXH=${BACKUP_MAX_AGE_HOURS:-24}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --markers) MARKERS="$2"; shift ;;
     --max-age) MAXH="$2"; shift ;;
   esac; shift || true

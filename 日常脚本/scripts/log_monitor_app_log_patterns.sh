@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：log_monitor_app_log_patterns.sh
 # 用途：按配置正则扫描应用日志，匹配到错误模式时告警
 # 依赖：bash、grep、awk
@@ -11,14 +12,16 @@
 #   APP_LOG_PATTERNS="ERROR,CRITICAL,Exception"
 # 退出码：0 无匹配；1 有匹配；2 严重（大量匹配）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="按配置正则扫描应用日志，匹配到错误模式时告警"
 
 JSON=0; PATHS=${APP_LOG_PATHS:-/var/log/app/app.log}; PATS=${APP_LOG_PATTERNS:-ERROR}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --paths) PATHS="$2"; shift ;;
     --patterns) PATS="$2"; shift ;;
   esac; shift || true

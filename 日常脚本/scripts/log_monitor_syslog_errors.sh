@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：log_monitor_syslog_errors.sh
 # 用途：监控系统日志中的 ERROR/CRIT 级别消息速率并告警
 # 依赖：bash、journalctl 或 /var/log/syslog
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 正常；1 警告（有错误）；2 严重（错误很多）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="监控系统日志中的 ERROR/CRIT 级别消息速率并告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

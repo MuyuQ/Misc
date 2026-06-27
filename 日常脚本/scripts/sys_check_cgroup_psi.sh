@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_cgroup_psi.sh
 # 用途：读取 /proc/pressure 的 CPU/MEM/IO PSI 指标，过载时告警
 # 依赖：bash、/proc/pressure/*
@@ -10,14 +11,16 @@
 #   PSI_WARN=0.5 PSI_CRIT=0.8
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="读取 /proc/pressure 的 CPU/MEM/IO PSI 指标，过载时告警"
 
 JSON=0; WARN=${PSI_WARN:-0.5}; CRIT=${PSI_CRIT:-0.8}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true

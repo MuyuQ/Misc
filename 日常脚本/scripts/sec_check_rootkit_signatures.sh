@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_rootkit_signatures.sh
 # 用途：调用 rkhunter/chkrootkit 检查可疑 rootkit 特征
 # 依赖：bash、rkhunter 或 chkrootkit
@@ -7,26 +8,28 @@
 # 环境变量：无
 # 退出码：0 正常；1 可疑；2 严重（大量可疑或工具失败）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="调用 rkhunter/chkrootkit 检查可疑 rootkit 特征"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 
 COUNT=0; TOOL=""
 if command -v rkhunter >/dev/null 2>&1; then
   TOOL=rkhunter
-  OUT=$(rkhunter --check --sk 2>/dev/null)
-  COUNT=$(printf "%s" "$OUT" | grep -c '\[ Warning \]')
+  OUT=$(timeout 300 rkhunter --check --sk 2>/dev/null || true)
+  COUNT=$(printf "%s" "$OUT" | grep -c '\[ Warning \]' || true)
 elif command -v chkrootkit >/dev/null 2>&1; then
   TOOL=chkrootkit
-  OUT=$(chkrootkit 2>/dev/null)
-  COUNT=$(printf "%s" "$OUT" | grep -ci 'INFECTED')
+  OUT=$(timeout 300 chkrootkit 2>/dev/null || true)
+  COUNT=$(printf "%s" "$OUT" | grep -ci 'INFECTED' || true)
 else
   exit_missing_dep rkhunter/chkrootkit
 fi

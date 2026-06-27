@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_world_writable_files.sh
 # 用途：在关键目录中查找世界可写文件/目录，发现则告警
 # 依赖：bash、find
@@ -9,9 +10,10 @@
 #   SCAN_PATHS="/etc,/opt,/var/www"
 # 退出码：0 无；1 有；2 严重（大量或出现在系统目录）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="在关键目录中查找世界可写文件/目录，发现则告警"
 
 require_cmd find || exit_missing_dep find
 
@@ -19,6 +21,7 @@ JSON=0; PATHS=${SCAN_PATHS:-/etc,/opt,/var/www}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --paths) PATHS="$2"; shift ;;
   esac; shift || true
 done

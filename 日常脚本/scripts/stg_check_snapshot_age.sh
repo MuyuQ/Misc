@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：stg_check_snapshot_age.sh
 # 用途：检查 LVM/ZFS 快照年龄与数量限制，超限告警
 # 依赖：bash、lvs 或 zfs
@@ -9,14 +10,16 @@
 #   SNAPSHOT_MAX_AGE_HOURS=168
 # 退出码：0 正常；1 过期；2 严重（大量过期）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 LVM/ZFS 快照年龄与数量限制，超限告警"
 
 JSON=0; MAXH=${SNAPSHOT_MAX_AGE_HOURS:-168}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --max-age) MAXH="$2"; shift ;;
   esac; shift || true
 done

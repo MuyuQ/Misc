@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：stg_check_nfs_mount_health.sh
 # 用途：检查 NFS 挂载可用性（简单读测试），异常时告警
 # 依赖：bash、mount 或 /proc/mounts、stat
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 正常；1 异常；2 严重（多处异常）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 NFS 挂载可用性（简单读测试），异常时告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

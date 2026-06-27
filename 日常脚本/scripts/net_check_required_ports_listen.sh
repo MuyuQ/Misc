@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：net_check_required_ports_listen.sh
 # 用途：检查必需端口是否处于监听状态
 # 依赖：bash、ss 或 netstat
@@ -9,14 +10,16 @@
 #   REQUIRED_PORTS="22,80,443"
 # 退出码：0 全部监听；1 有缺失；2 严重（全部缺失）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查必需端口是否处于监听状态"
 
 JSON=0; PORTS=${REQUIRED_PORTS:-22}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --ports) PORTS="$2"; shift ;;
   esac; shift || true
 done

@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_entropy_pool.sh
 # 用途：检查系统熵池可用性，低于阈值告警
 # 依赖：bash、/proc/sys/kernel/random/entropy_avail
@@ -10,14 +11,16 @@
 #   ENTROPY_WARN=512 ENTROPY_CRIT=256
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查系统熵池可用性，低于阈值告警"
 
 JSON=0; WARN=${ENTROPY_WARN:-512}; CRIT=${ENTROPY_CRIT:-256}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true

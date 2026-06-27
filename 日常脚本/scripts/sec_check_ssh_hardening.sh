@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_ssh_hardening.sh
 # 用途：检查 sshd 配置是否符合安全基线（禁止 root 登录、禁用密码登录等）
 # 依赖：bash、grep；可选：sshd -t
@@ -7,9 +8,10 @@
 # 环境变量：无
 # 退出码：0 合规；1 违反；2 严重（多项违反或配置错误）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 sshd 配置是否符合安全基线（禁止 root 登录、禁用密码登录等）"
 
 CONF=/etc/ssh/sshd_config
 [ -r "$CONF" ] || exit_missing_dep sshd_config
@@ -18,6 +20,7 @@ JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

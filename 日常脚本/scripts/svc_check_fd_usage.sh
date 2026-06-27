@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：svc_check_fd_usage.sh
 # 用途：检查系统文件句柄使用率（/proc/sys/fs/file-nr），超阈值告警
 # 依赖：bash、/proc/sys/fs/file-nr
@@ -10,14 +11,16 @@
 #   FD_WARN_PERCENT=70 FD_CRIT_PERCENT=90
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查系统文件句柄使用率（/proc/sys/fs/file-nr），超阈值告警"
 
 JSON=0; WARN=${FD_WARN_PERCENT:-70}; CRIT=${FD_CRIT_PERCENT:-90}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true

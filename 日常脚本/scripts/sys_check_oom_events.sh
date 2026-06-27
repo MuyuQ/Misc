@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_oom_events.sh
 # 用途：扫描内核日志中的 OOM Kill 事件，发现则告警
 # 依赖：bash、dmesg；可选：journalctl
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 无事件；1 有事件；2 严重（大量/伴随 panic）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="扫描内核日志中的 OOM Kill 事件，发现则告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

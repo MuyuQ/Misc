@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：db_check_mysql_health.sh
 # 用途：检查 MySQL 连接数与复制延迟等基本健康指标
 # 依赖：bash、mysql 客户端
@@ -8,9 +9,10 @@
 #   MYSQL_HOST=127.0.0.1 MYSQL_PORT=3306 MYSQL_USER=root MYSQL_PASS= MYSQL_CONN_WARN=200 MYSQL_CONN_CRIT=400
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失/连接失败
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 MySQL 连接数与复制延迟等基本健康指标"
 
 command -v mysql >/dev/null 2>&1 || exit_missing_dep mysql
 
@@ -18,6 +20,7 @@ JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 
@@ -28,10 +31,13 @@ AUTH=( -h "$HOST" -P "$PORT" -u "$USER" )
 [ -n "$PASS" ] && AUTH+=( -p"$PASS" )
 
 CONN=$(mysql "${AUTH[@]}" -e "SHOW STATUS LIKE 'Threads_connected';" 2>/dev/null | awk '/Threads_connected/ {print $2}')
-SLAVE=$(mysql "${AUTH[@]}" -e "SHOW SLAVE STATUS\G" 2>/dev/null | awk -F ': ' '/Seconds_Behind_Master/ {print $2}')
 if [ -z "$CONN" ]; then
   exit 3
 fi
+
+# 兼容 MySQL 8.0.22+ (SHOW REPLICA STATUS) 和旧版 (SHOW SLAVE STATUS)
+SLAVE=$(mysql "${AUTH[@]}" -e "SHOW REPLICA STATUS\G" 2>/dev/null | awk -F ': ' '/Seconds_Behind_Source/ {print $2}')
+[ -z "$SLAVE" ] && SLAVE=$(mysql "${AUTH[@]}" -e "SHOW SLAVE STATUS\G" 2>/dev/null | awk -F ': ' '/Seconds_Behind_Master/ {print $2}')
 [ -z "$SLAVE" ] && SLAVE="NA"
 
 SEV=0
@@ -40,7 +46,8 @@ elif [ "$CONN" -ge "$WARN" ]; then SEV=1
 else SEV=0; fi
 
 if [ "$JSON" -eq 1 ]; then
-  print_json mysql threads_connected "$CONN" "$WARN" "$SEV"; echo "{""replication_lag"":""$SLAVE""}"
+  print_json mysql threads_connected "$CONN" "$WARN" "$SEV"
+  printf '{"replication_lag":"%s"}\n' "$SLAVE"
 else
   print_human mysql threads_connected "$CONN" "$WARN" "$SEV"; echo "replication_lag=$SLAVE"
 fi

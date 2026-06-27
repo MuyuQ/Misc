@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_password_policy.sh
 # 用途：检查 PAM 密码策略是否启用（长度/复杂度），不合规告警
 # 依赖：bash、grep
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 合规；1 违反；2 严重（完全未启用或明显弱策略）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 PAM 密码策略是否启用（长度/复杂度），不合规告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

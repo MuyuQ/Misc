@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_cpu_steal.sh
 # 用途：检测 CPU steal time（虚拟化争用），超阈值时告警
 # 依赖：bash、mpstat（sysstat）或 /proc/stat
@@ -9,15 +10,17 @@
 #   CPU_STEAL_WARN=5 CPU_STEAL_CRIT=10
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检测 CPU steal time（虚拟化争用），超阈值时告警"
 
 JSON=0
 THRESH=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --threshold) THRESH="$2"; shift ;;
   esac
   shift || true

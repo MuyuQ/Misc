@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_suid_sgid_binaries.sh
 # 用途：发现新出现的 SUID/SGID 可执行文件并告警
 # 依赖：bash、find
@@ -9,9 +10,10 @@
 #   SCAN_PATHS="/usr,/bin,/sbin,/usr/local"
 # 退出码：0 无；1 有；2 严重（大量或不可信路径）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="发现新出现的 SUID/SGID 可执行文件并告警"
 
 require_cmd find || exit_missing_dep find
 
@@ -19,6 +21,7 @@ JSON=0; PATHS=${SCAN_PATHS:-/usr,/bin,/sbin,/usr/local}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --paths) PATHS="$2"; shift ;;
   esac; shift || true
 done

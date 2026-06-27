@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_memory_usage.sh
 # 用途：检查内存占用百分比，超阈值时告警并输出 JSON 可选
 # 依赖：bash、free、awk
@@ -10,14 +11,16 @@
 #   MEM_WARN_PERCENT=80 MEM_CRIT_PERCENT=90
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查内存占用百分比，超阈值时告警并输出 JSON 可选"
 
 JSON=0; WARN=${MEM_WARN_PERCENT:-80}; CRIT=${MEM_CRIT_PERCENT:-90}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true

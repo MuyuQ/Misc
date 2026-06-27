@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：svc_check_systemd_services.sh
 # 用途：检查关键 systemd 服务是否处于 active/running 状态
 # 依赖：bash、systemctl 或 service
@@ -9,14 +10,16 @@
 #   REQUIRED_SERVICES="sshd,cron"
 # 退出码：0 全部健康；1 有不健康；2 严重（全部不健康）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查关键 systemd 服务是否处于 active/running 状态"
 
 JSON=0; SVCS=${REQUIRED_SERVICES:-sshd}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --services) SVCS="$2"; shift ;;
   esac; shift || true
 done

@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：svc_check_core_dumps.sh
 # 用途：检查最近出现的核心转储文件（core dump），发现则告警
 # 依赖：bash、find
@@ -9,9 +10,10 @@
 #   CORE_PATHS="/var/lib/systemd/coredump,/tmp"
 # 退出码：0 无；1 有；2 严重（数量很多）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查最近出现的核心转储文件（core dump），发现则告警"
 
 require_cmd find || exit_missing_dep find
 
@@ -19,6 +21,7 @@ JSON=0; PATHS=${CORE_PATHS:-/var/lib/systemd/coredump,/tmp}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --paths) PATHS="$2"; shift ;;
   esac; shift || true
 done

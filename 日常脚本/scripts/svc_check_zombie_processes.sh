@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：svc_check_zombie_processes.sh
 # 用途：统计僵尸进程数量并定位父进程，发现则告警
 # 依赖：bash、ps、awk
@@ -7,9 +8,10 @@
 # 环境变量：无
 # 退出码：0 无僵尸；1 有僵尸；2 严重（僵尸数量过多）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="统计僵尸进程数量并定位父进程，发现则告警"
 
 require_cmd ps || exit_missing_dep ps
 
@@ -17,6 +19,7 @@ JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

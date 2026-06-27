@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：svc_check_process_flapping.sh
 # 用途：检测关键服务是否短时间内频繁重启（抖动）
 # 依赖：bash、journalctl 或 systemctl
@@ -9,14 +10,16 @@
 #   REQUIRED_SERVICES="sshd,cron"
 # 退出码：0 无抖动；1 有抖动；2 严重（多服务抖动）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检测关键服务是否短时间内频繁重启（抖动）"
 
 JSON=0; SVCS=${REQUIRED_SERVICES:-sshd}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --services) SVCS="$2"; shift ;;
   esac; shift || true
 done

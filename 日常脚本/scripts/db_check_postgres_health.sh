@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：db_check_postgres_health.sh
 # 用途：检查 PostgreSQL 连接数与复制状态等基本健康指标
 # 依赖：bash、psql 客户端
@@ -8,9 +9,10 @@
 #   PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres PGPASSWORD= PG_CONN_WARN=200 PG_CONN_CRIT=400
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失/连接失败
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 PostgreSQL 连接数与复制状态等基本健康指标"
 
 command -v psql >/dev/null 2>&1 || exit_missing_dep psql
 
@@ -18,6 +20,7 @@ JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

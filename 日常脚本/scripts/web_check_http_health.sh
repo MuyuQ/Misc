@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：web_check_http_health.sh
 # 用途：对多个 URL 执行 HTTP 健康检查（状态码、响应时间）
 # 依赖：bash、curl
@@ -9,9 +10,10 @@
 #   HTTP_CHECK_URLS="https://example.com/"
 # 退出码：0 正常；1 警告（响应慢/部分失败）；2 严重（大量失败）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="对多个 URL 执行 HTTP 健康检查（状态码、响应时间）"
 
 command -v curl >/dev/null 2>&1 || exit_missing_dep curl
 
@@ -19,6 +21,7 @@ JSON=0; URLS=${HTTP_CHECK_URLS:-https://example.com/}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --urls) URLS="$2"; shift ;;
   esac; shift || true
 done
@@ -40,7 +43,8 @@ elif [ "$FAILS" -gt 0 ] || [ "$WORST_MS" -ge 2000 ]; then SEV=1
 else SEV=0; fi
 
 if [ "$JSON" -eq 1 ]; then
-  print_json http worst_latency_ms "$WORST_MS" 2000 "$SEV"; echo "{""failures"":""$FAILS""}"
+  print_json http worst_latency_ms "$WORST_MS" 2000 "$SEV"
+  printf '{"failures":%d,"total":%d}\n' "$FAILS" "$TOTAL"
 else
   print_human http worst_latency_ms "$WORST_MS" 2000 "$SEV"; echo "failures=$FAILS total=$TOTAL"
 fi

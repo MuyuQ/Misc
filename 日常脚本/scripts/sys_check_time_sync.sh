@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_time_sync.sh
 # 用途：检查系统时间同步状态与漂移，异常时告警
 # 依赖：bash、timedatectl；可选：chronyc、ntpq
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 正常；1 警告（未同步或漂移较大）；2 严重（服务失效）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查系统时间同步状态与漂移，异常时告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

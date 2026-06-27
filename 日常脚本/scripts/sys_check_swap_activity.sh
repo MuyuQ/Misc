@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_swap_activity.sh
 # 用途：检查 Swap 使用百分比，超阈值告警
 # 依赖：bash、free、awk；可选：vmstat（换入换出速率）
@@ -10,14 +11,16 @@
 #   SWAP_WARN_PERCENT=30 SWAP_CRIT_PERCENT=60
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 Swap 使用百分比，超阈值告警"
 
 JSON=0; WARN=${SWAP_WARN_PERCENT:-30}; CRIT=${SWAP_CRIT_PERCENT:-60}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true

@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sec_check_user_accounts.sh
 # 用途：检查本地用户账户与 sudoers 配置的异常项
 # 依赖：bash、awk、getent；可选：chage
@@ -9,14 +10,16 @@
 #   EXPECTED_USERS=""
 # 退出码：0 正常；1 有异常；2 严重（大量异常或过期账户）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查本地用户账户与 sudoers 配置的异常项"
 
 JSON=0; EXPECTED=${EXPECTED_USERS:-}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --expected) EXPECTED="$2"; shift ;;
   esac; shift || true
 done

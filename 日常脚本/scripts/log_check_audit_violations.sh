@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：log_check_audit_violations.sh
 # 用途：检查 auditd 关键事件与策略违规情况
 # 依赖：bash、ausearch 或 auditctl
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 正常；1 有事件；2 严重（大量或高危）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 auditd 关键事件与策略违规情况"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：stg_check_lvm_raid_health.sh
 # 用途：检查 LVM 与 mdadm RAID 的健康状态，降级/失效告警
 # 依赖：bash、lvs 或 mdadm
@@ -7,14 +8,16 @@
 # 环境变量：无
 # 退出码：0 正常；1 有异常；2 严重（多处异常）；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 LVM 与 mdadm RAID 的健康状态，降级/失效告警"
 
 JSON=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
   esac; shift || true
 done
 
@@ -27,8 +30,10 @@ if command -v lvs >/dev/null 2>&1; then
     ABN=$((ABN+c)); DETAIL="$DETAIL LVM:$c"
   else
     OUT=$(lvs --noheadings -o lv_name,lv_attr 2>/dev/null)
-    c=$(echo "$OUT" | awk '$2!~/.*/ {print 0}' | wc -l)
-    ABN=$((ABN+c)); DETAIL="$DETAIL LVM:$c"
+    if [ -n "$OUT" ]; then
+      c=$(echo "$OUT" | awk '$2 ~ /^S/ || $2 ~ /^p/ {print $0}' | wc -l)
+      ABN=$((ABN+c)); DETAIL="$DETAIL LVM:$c"
+    fi
   fi
 fi
 

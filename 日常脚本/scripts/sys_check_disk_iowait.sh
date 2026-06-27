@@ -1,3 +1,4 @@
+#!/bin/bash
 # 脚本名称：sys_check_disk_iowait.sh
 # 用途：检查 CPU I/O 等待比率，超阈值告警
 # 依赖：bash、mpstat（sysstat）或 sar；无则降级为不可用
@@ -10,14 +11,16 @@
 #   IOWAIT_WARN_PERCENT=20 IOWAIT_CRIT_PERCENT=40
 # 退出码：0 正常；1 警告；2 严重；3 依赖缺失
 
-set -u
+set -euo pipefail
 . "$(dirname "$0")/../lib/common.sh"
 load_env
+DESCRIPTION="检查 CPU I/O 等待比率，超阈值告警"
 
 JSON=0; WARN=${IOWAIT_WARN_PERCENT:-20}; CRIT=${IOWAIT_CRIT_PERCENT:-40}
 while [ $# -gt 0 ]; do
   case "$1" in
     --json) JSON=1 ;;
+    --help|-h) print_help; exit 0 ;;
     --warn) WARN="$2"; shift ;;
     --crit) CRIT="$2"; shift ;;
   esac; shift || true
