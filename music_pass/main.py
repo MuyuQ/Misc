@@ -152,7 +152,8 @@ def parse_arguments():
     parser.add_argument(
         "--appium-port", type=str, default=None, help="Appium服务器的端口，默认为4723"
     )
-    parser.add_argument("--app-package", type=str, required=True, help="目标应用的包名")
+    parser.add_argument("--app-package", type=str,
+                        required=True, help="目标应用的包名")
     parser.add_argument(
         "--app-activity", type=str, required=True, help="目标应用的Activity名"
     )
@@ -209,7 +210,8 @@ def connect_to_device(cfg: dict):
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            driver = webdriver.Remote(appium_server_url, capabilities)  # type: ignore
+            driver = webdriver.Remote(
+                appium_server_url, capabilities)  # type: ignore
             logger.info("成功连接到设备")
             return driver
         except WebDriverException as e:
@@ -227,7 +229,8 @@ def take_screenshot(driver, screenshot_dir: str, tag: str):
     """截取屏幕截图"""
     try:
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        filepath = os.path.join(screenshot_dir, f"screenshot_{tag}_{timestamp}.png")
+        filepath = os.path.join(
+            screenshot_dir, f"screenshot_{tag}_{timestamp}.png")
         driver.save_screenshot(filepath)
         logger.debug(f"已保存截图: {filepath}")
     except Exception as e:
