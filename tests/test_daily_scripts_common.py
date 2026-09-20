@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class DailyScriptsCommonTests(unittest.TestCase):
+    """DailyScriptsCommonTests 功能说明。"""
     def test_shared_common_library_exists_with_required_functions(self):
         common_path = ROOT / "日常脚本" / "lib" / "common.sh"
 

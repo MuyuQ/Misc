@@ -9,6 +9,7 @@ from email.message import EmailMessage
 
 
 def main() -> int:
+    """main 功能说明。"""
     parser = argparse.ArgumentParser(description="Send a plain-text alert email.")
     parser.add_argument("--subject", required=True)
     args = parser.parse_args()
