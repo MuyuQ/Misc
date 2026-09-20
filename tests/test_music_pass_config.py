@@ -28,7 +28,8 @@ def install_mobile_stubs(include_yaml=True):
 
     appiumby.AppiumBy = AppiumBy
     sys.modules["appium.webdriver"] = types.ModuleType("appium.webdriver")
-    sys.modules["appium.webdriver.common"] = types.ModuleType("appium.webdriver.common")
+    sys.modules["appium.webdriver.common"] = types.ModuleType(
+        "appium.webdriver.common")
     sys.modules["appium.webdriver.common.appiumby"] = appiumby
 
     exceptions = types.ModuleType("selenium.common.exceptions")
@@ -52,7 +53,8 @@ def install_mobile_stubs(include_yaml=True):
     ui = types.ModuleType("selenium.webdriver.support.ui")
     ui.WebDriverWait = object
     sys.modules["selenium.webdriver"] = types.ModuleType("selenium.webdriver")
-    sys.modules["selenium.webdriver.support"] = types.ModuleType("selenium.webdriver.support")
+    sys.modules["selenium.webdriver.support"] = types.ModuleType(
+        "selenium.webdriver.support")
     sys.modules["selenium.webdriver.support.ui"] = ui
     sys.modules["selenium.webdriver.support.expected_conditions"] = types.ModuleType(
         "selenium.webdriver.support.expected_conditions"
@@ -70,7 +72,8 @@ def import_main(include_yaml=True):
     """import_main 功能说明。"""
     install_mobile_stubs(include_yaml=include_yaml)
     sys.modules.pop("music_pass_main_under_test", None)
-    spec = importlib.util.spec_from_file_location("music_pass_main_under_test", MAIN_PATH)
+    spec = importlib.util.spec_from_file_location(
+        "music_pass_main_under_test", MAIN_PATH)
     module = importlib.util.module_from_spec(spec)
     sys.modules["music_pass_main_under_test"] = module
     spec.loader.exec_module(module)
@@ -79,14 +82,17 @@ def import_main(include_yaml=True):
 
 class MusicPassConfigTests(unittest.TestCase):
     """MusicPassConfigTests 功能说明。"""
+
     def test_json_config_loads_without_pyyaml_installed(self):
         module = import_main(include_yaml=False)
 
         with tempfile.TemporaryDirectory() as tmp:
             config_path = Path(tmp) / "config.json"
-            config_path.write_text(json.dumps({"device_ip": "192.168.1.50"}), encoding="utf-8")
+            config_path.write_text(json.dumps(
+                {"device_ip": "192.168.1.50"}), encoding="utf-8")
 
-            self.assertEqual(module.load_config(str(config_path)), {"device_ip": "192.168.1.50"})
+            self.assertEqual(module.load_config(str(config_path)), {
+                             "device_ip": "192.168.1.50"})
 
     def test_config_file_supplies_required_connection_fields(self):
         module = import_main()
@@ -109,11 +115,13 @@ class MusicPassConfigTests(unittest.TestCase):
             with patch.object(sys, "argv", ["main.py", "--config", str(config_path)]):
                 args = module.parse_arguments()
 
-            runtime_config = module.build_appium_config(args, module.load_config(args.config))
+            runtime_config = module.build_appium_config(
+                args, module.load_config(args.config))
 
         self.assertEqual(runtime_config.device_ip, "192.168.1.100")
         self.assertEqual(runtime_config.app_package, "com.example.app")
-        self.assertEqual(runtime_config.app_activity, "com.example.app.MainActivity")
+        self.assertEqual(runtime_config.app_activity,
+                         "com.example.app.MainActivity")
         self.assertEqual(runtime_config.button_text, "配置按钮")
         self.assertEqual(runtime_config.interval, 7)
 
@@ -153,11 +161,13 @@ class MusicPassConfigTests(unittest.TestCase):
             ):
                 args = module.parse_arguments()
 
-            runtime_config = module.build_appium_config(args, module.load_config(args.config))
+            runtime_config = module.build_appium_config(
+                args, module.load_config(args.config))
 
         self.assertEqual(runtime_config.device_ip, "10.0.0.2")
         self.assertEqual(runtime_config.app_package, "com.cli.app")
-        self.assertEqual(runtime_config.app_activity, "com.cli.app.MainActivity")
+        self.assertEqual(runtime_config.app_activity,
+                         "com.cli.app.MainActivity")
         self.assertEqual(runtime_config.interval, 3)
 
 
