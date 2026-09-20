@@ -10,7 +10,8 @@ from email.message import EmailMessage
 
 def main() -> int:
     """main 功能说明。"""
-    parser = argparse.ArgumentParser(description="Send a plain-text alert email.")
+    parser = argparse.ArgumentParser(
+        description="Send a plain-text alert email.")
     parser.add_argument("--subject", required=True)
     args = parser.parse_args()
 
@@ -20,7 +21,8 @@ def main() -> int:
         return 0
 
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
-    mail_from = os.environ.get("MAIL_FROM") or os.environ.get("SMTP_USER") or "monitor@localhost"
+    mail_from = os.environ.get("MAIL_FROM") or os.environ.get(
+        "SMTP_USER") or "monitor@localhost"
     body = sys.stdin.read()
 
     message = EmailMessage()
