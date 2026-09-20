@@ -13,6 +13,7 @@ MAIN_PATH = ROOT / "music_pass" / "main.py"
 
 
 def install_mobile_stubs(include_yaml=True):
+    """install_mobile_stubs 功能说明。"""
     appium = types.ModuleType("appium")
     appium.webdriver = types.SimpleNamespace(Remote=Mock())
     sys.modules["appium"] = appium
@@ -66,6 +67,7 @@ def install_mobile_stubs(include_yaml=True):
 
 
 def import_main(include_yaml=True):
+    """import_main 功能说明。"""
     install_mobile_stubs(include_yaml=include_yaml)
     sys.modules.pop("music_pass_main_under_test", None)
     spec = importlib.util.spec_from_file_location("music_pass_main_under_test", MAIN_PATH)
@@ -76,6 +78,7 @@ def import_main(include_yaml=True):
 
 
 class MusicPassConfigTests(unittest.TestCase):
+    """MusicPassConfigTests 功能说明。"""
     def test_json_config_loads_without_pyyaml_installed(self):
         module = import_main(include_yaml=False)
 
