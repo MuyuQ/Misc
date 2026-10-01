@@ -137,8 +137,7 @@ def run_auto_press(
 
                 # 显示每秒按键次数
                 keys_per_second = (
-                    (counter * len(keys)) /
-                    elapsed_time if elapsed_time > 0 else 0
+                    (counter * len(keys)) / elapsed_time if elapsed_time > 0 else 0
                 )
                 logging.info(f"平均按键速度: {keys_per_second:.2f} 键/秒\n")
 
