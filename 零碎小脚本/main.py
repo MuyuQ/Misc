@@ -112,8 +112,7 @@ def download_and_convert_image(
                 if image:
                     try:
                         # 尝试保存为PNG格式（跨平台路径）
-                        save_path = os.path.join(
-                            output_dir, f"{safe_filename}-1.png")
+                        save_path = os.path.join(output_dir, f"{safe_filename}-1.png")
                         image.save(save_path, "PNG")
                         return True
                     except Exception as e2:
@@ -219,8 +218,7 @@ def download_images_concurrent(
             # 显示进度
             completed_count += 1
             progress = completed_count / total_rows * 100
-            logging.info(
-                f"进度: {progress:.1f}% ({completed_count}/{total_rows})")
+            logging.info(f"进度: {progress:.1f}% ({completed_count}/{total_rows})")
 
     end_time = time.time()
     elapsed_time = end_time - start_time

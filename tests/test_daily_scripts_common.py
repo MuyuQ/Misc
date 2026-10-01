@@ -1,7 +1,6 @@
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -11,8 +10,9 @@ class DailyScriptsCommonTests(unittest.TestCase):
     def test_shared_common_library_exists_with_required_functions(self):
         common_path = ROOT / "日常脚本" / "lib" / "common.sh"
 
-        self.assertTrue(common_path.exists(),
-                        "日常脚本/lib/common.sh is required by every script")
+        self.assertTrue(
+            common_path.exists(), "日常脚本/lib/common.sh is required by every script"
+        )
         content = common_path.read_text(encoding="utf-8")
         for function_name in [
             "load_env",

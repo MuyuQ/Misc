@@ -217,8 +217,7 @@ def main() -> int:
     logging.info(f"线程数: {args.workers}")
 
     # 处理图片
-    total, success = process_images(
-        input_dir, output_dir, frame_path, args.workers)
+    total, success = process_images(input_dir, output_dir, frame_path, args.workers)
 
     logging.info(f"\n处理完成! 共处理 {total} 张图片，成功 {success} 张。")
     if total > 0:
