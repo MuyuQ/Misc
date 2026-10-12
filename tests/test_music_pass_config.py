@@ -27,7 +27,8 @@ def install_mobile_stubs(include_yaml=True):
 
     appiumby.AppiumBy = AppiumBy
     sys.modules["appium.webdriver"] = types.ModuleType("appium.webdriver")
-    sys.modules["appium.webdriver.common"] = types.ModuleType("appium.webdriver.common")
+    sys.modules["appium.webdriver.common"] = types.ModuleType(
+        "appium.webdriver.common")
     sys.modules["appium.webdriver.common.appiumby"] = appiumby
 
     exceptions = types.ModuleType("selenium.common.exceptions")
@@ -93,7 +94,8 @@ class MusicPassConfigTests(unittest.TestCase):
             )
 
             self.assertEqual(
-                module.load_config(str(config_path)), {"device_ip": "192.168.1.50"}
+                module.load_config(str(config_path)), {
+                    "device_ip": "192.168.1.50"}
             )
 
     def test_config_file_supplies_required_connection_fields(self):
@@ -123,7 +125,8 @@ class MusicPassConfigTests(unittest.TestCase):
 
         self.assertEqual(runtime_config.device_ip, "192.168.1.100")
         self.assertEqual(runtime_config.app_package, "com.example.app")
-        self.assertEqual(runtime_config.app_activity, "com.example.app.MainActivity")
+        self.assertEqual(runtime_config.app_activity,
+                         "com.example.app.MainActivity")
         self.assertEqual(runtime_config.button_text, "配置按钮")
         self.assertEqual(runtime_config.interval, 7)
 
@@ -169,7 +172,8 @@ class MusicPassConfigTests(unittest.TestCase):
 
         self.assertEqual(runtime_config.device_ip, "10.0.0.2")
         self.assertEqual(runtime_config.app_package, "com.cli.app")
-        self.assertEqual(runtime_config.app_activity, "com.cli.app.MainActivity")
+        self.assertEqual(runtime_config.app_activity,
+                         "com.cli.app.MainActivity")
         self.assertEqual(runtime_config.interval, 3)
 
 
